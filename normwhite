@@ -1,0 +1,8 @@
+#!/bin/bash
+# This script reads a line one at a time, replaces "blanks" with
+#   a single space, then removes any space at the start of the 
+#   line using sed.
+while read line
+do
+    echo $line | tr -s "[:blank:]" " " | sed -re "s/( *)(.*)/\2/g"
+done

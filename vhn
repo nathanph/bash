@@ -1,0 +1,4 @@
+#!/bin/bash
+
+
+echo $HOSTNAME | sed -re "s/(.)/\1\n/g"

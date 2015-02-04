@@ -1,0 +1,296 @@
+Nathan Hernandez - hernandeznp
+
+
+############################################################
+Problem 1: 
+############################################################
+
+Solution:
+tr -s "[:blank:]" " "
+
+Tests:
+this    ^       ^       is a test^         ^    ^       of spaces       ^       ^
+this is a test of spaces
+
+############################################################
+Problem 2: 
+############################################################
+
+Solution:
+
+
+Tests:
+
+
+############################################################
+Problem 3: 
+############################################################
+
+Solution:
+# Use extended regex in grep to match strings at the start
+#   of a line with only letters in it.
+# Count the number of lines printed.
+grep -E ^[a-zA-Z]+: /etc/passwd | wc -l
+
+Tests:
+1209
+
+############################################################
+Problem 4: 
+############################################################
+
+Solution:
+# Replace lowercase vowels from stdin with capitalized 
+#   versions.
+sed -e 's/e/E/g ; s/a/A/g ; s/i/I/g ; s/o/O/g ; s/u/U/g'
+
+Tests:
+the quick brown fox jumped over the lazy dog
+thE qUIck brOwn fOx jUmpEd OvEr thE lAzy dOg
+
+############################################################
+Problem 5: 
+############################################################
+
+Solution:
+# Print the date.
+# Replace non-numbers with nothing (remove non-numbers).
+# Count the length of the line.
+date | sed 's/[^0-9]//g' | wc -L
+
+Tests:
+12
+
+############################################################
+Problem 6: 
+############################################################
+
+Solution:
+# Capture all input using three capture groups.
+# Capture group 1 takes the first three characters.
+# Capture group 3 takes the last three characters.
+# Capture group 2 captures everything inbetween 1 and 3.
+# Invert the order of 1 and 3.
+sed -e 's/^\(.\{3\}\)\(.*\?\)\(.\{3\}\)$/\3\2\1/g'
+
+Tests:
+abc 1234f 9 cde
+cde 1234f 9 abc
+cde 43at39 abc
+abc 43at39 cde
+efgh 1234
+234h 1efg
+123456
+456123
+abcdef
+defabc
+
+############################################################
+Problem 7: 
+############################################################
+
+Solution:
+# Use ',' as the field separator.
+# Print $1, $2, and $3 on their own lines.
+awk -F, '{printf "1) %s\n2) %s\n3) %s\n", $1, $2, $3}' input.csv
+
+Tests:
+1) a
+2)  b
+3)  c
+1) e
+2) f
+3) g
+1) aaa
+2) bbb
+3) ccc
+1) hi
+2)  there
+3)  howdy
+
+############################################################
+Problem 8: 
+############################################################
+
+Solution:
+# Print each line.
+# Update each column variable.
+# Print the results.
+awk '{printf "%i %i %i\n", $1, $2, $3} 
+    {c1=c1+$1; c2=c2+$2; c3=c3+$3} 
+    END{printf "--------\n%i %i %i\n", c1, c2, c3}' columns
+
+Tests:
+1 -2 10
+3 4 -7
+8 21 42
+12 6 1
+--------
+24 29 46
+
+############################################################
+Problem 9: 
+############################################################
+
+Solution:
+# Echo the path variable.
+# Format the output.
+echo $PATH | sed -e "s/^/Directories searched\n/g ; s/\([^:\n]*\?\)\([:\n]\)/\1\n/g"
+
+Tests:
+Directories searched
+/usr/local/bin
+/usr/bin
+/usr/sbin
+/bin
+/usr/bin/X11
+.
+
+############################################################
+Problem 10: 
+############################################################
+
+Solution:
+# Pipe ls to grep to find files with numbers.
+ls * | grep -e "[0-9].*"
+
+Tests:
+3test
+blah0
+ 3st
+
+############################################################
+Problem 11: 
+############################################################
+
+Solution:
+# Loops from a to e creating directories and changing 
+#   directories into them.
+#!/bin/bash
+for i in {a..e}
+do
+    mkdir ${i}
+    cd ${i}
+done
+cd ../../../../..
+
+Tests:
+a:
+b
+
+a/b:
+c
+
+a/b/c:
+d
+
+a/b/c/d:
+e
+
+a/b/c/d/e:
+
+############################################################
+Problem 12: 
+############################################################
+
+Solution:
+# This function checks for subdirectories using echo, then
+#   recurses into them if they exist.
+#!/bin/bash
+
+function recurseDirectory {
+    subDirs=`echo $1*/ | sed 's/^.*\*\///g'`
+    subDirCount=`echo $subDirs | wc -w`
+    if [ $subDirCount != 0 ]
+    then 
+        for subDir in $subDirs; do
+            recurseDirectory $subDir
+        done
+    fi
+
+    subDirs=`echo $1*/ | sed 's/^.*\*\///g'`
+    subDirCount=`echo $subDirs | wc -w`
+    printf "directory: %s, %i subdirectories\n" $1 $subDirCount
+    if [ $subDirCount != 0 ]
+    then
+        printf "\t%s\n" $subDirs
+    fi
+}
+
+recurseDirectory $1
+
+
+Tests:
+directory: ./a/d/, 0 subdirectories
+directory: ./a/e/, 0 subdirectories
+directory: ./a/, 2 subdirectories
+        ./a/d/
+        ./a/e/
+directory: ./b/, 0 subdirectories
+directory: ./c/f/, 0 subdirectories
+directory: ./c/, 1 subdirectories
+        ./c/f/
+directory: ./, 3 subdirectories
+        ./a/
+        ./b/
+        ./c/
+
+############################################################
+Problem 13: 
+############################################################
+
+Solution:
+# This script uses rev to do most of the work.
+# The rest is just a while loop with a read and func call.
+#!/bin/bash
+function reverseWord {
+    reverseWord=`echo $1 | rev`
+}
+
+
+printf "Enter a line (C-d to terminate): "
+while read line
+do
+    for word in $line; do
+        reverseWord $word
+        reverseLine="$reverseWord $reverseLine"
+    done
+    echo $reverseLine
+    reverseLine=""
+    printf "Enter a line (C-d to terminate: "
+done 
+
+Tests:
+Enter a line (C-d to terminate): hi there cs 5520
+0255 sc ereht ih
+Enter a line (C-d to terminate: how is it going
+gniog ti si woh
+Enter a line (C-d to terminate: 
+
+############################################################ 
+Problem 14: 
+############################################################
+
+Solution:
+# sed doesn't support lazy evaluation, so this is more
+#   convoluted  than I would have liked honestly.
+# First the 'a's at the start of the line are moved to the
+#   end.
+# Next the 'b's and 'a's from the end of the line are moved
+#   to their own line.
+# Finally, the first line with the remaining text is delted.
+sed -re 's/^(a+)(.*)/\2\1/g' -e 's/(b+)(a+)$/\n\2X\1/g' -e 's/^[^a+].*\n//g'
+
+Tests:
+aaaUUUbbb+-bbbbbbb
+aaaXbbbbbbb
+aRextrastuffhere=b
+aXb
+
+
+
+
+
+
+
+

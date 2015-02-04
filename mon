@@ -1,0 +1,21 @@
+#!/bin/bash
+start=`date +%s`
+#while [ $(( $(date +%s) - 3)) -lt $start ];
+#do
+#    echo "test"
+#done
+
+while true
+do
+    clear
+    date
+    echo ""
+    who 
+
+    if [[ "$1" =~ ^[0-9]+$ ]] && [ $1 -ge 1 ] && [ $1 -le 1000 ];
+    then
+        sleep $1
+    else
+        sleep 20
+    fi
+done
